@@ -1,7 +1,7 @@
 # This workflow will do a clean installation of node dependencies, cache/restore them, build the source code and run tests across different versions of node
 # For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-nodejs
 
-name: Node.js CI
+name: Build_test_deploy
 
 on:
   push:
@@ -38,3 +38,17 @@ jobs:
 
     - name: Test the app
       run: npm test
+  
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Deploy for production
+      uses: actions/checkout@v3
+    - name: do deploy action
+      uses: JorgeNLJunior/render-deploy@v1.4.4
+      with:
+        service_id: ${{ secrets.RENDER_SERVICE_ID }}
+        api_key: ${{ secrets.RENDER_TOKEN }}
+        wait_deploy: true
